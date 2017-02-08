@@ -24,7 +24,7 @@ BOOK = sh_utl.Token('Book')
 SHEETS = sh_utl.Token('Sheets')
 
 
-def _get_name(name, names):
+def _find_word_ci(name, names):
     if name not in names:
         name = name.upper()
         for n in names:
@@ -232,7 +232,7 @@ class ExcelModel(object):
             if isinstance(k, sh_utl.Token):
                 continue
             rng = r.ranges[0]
-            filename, sheet_name = _get_name(rng['excel'], books), rng['sheet']
+            filename, sheet_name = _find_word_ci(rng['excel'], books), rng['sheet']
 
             if not are_in(books, filename, BOOK):
                 book = get_in(books, filename, BOOK, default=openpyxl.Workbook)
@@ -242,7 +242,7 @@ class ExcelModel(object):
                 book = books[filename][BOOK]
 
             sheet_names = book.sheetnames
-            sheet_name = _get_name(sheet_name, sheet_names)
+            sheet_name = _find_word_ci(sheet_name, sheet_names)
             if sheet_name not in sheet_names:
                 book.create_sheet(sheet_name)
             sheet = book[sheet_name]
