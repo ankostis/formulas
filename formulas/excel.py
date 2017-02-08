@@ -128,9 +128,7 @@ class ExcelModel(object):
         get_in = sh_utl.get_nested_dicts
         if isinstance(worksheet, str):
             book = get_in(self.books, context['excel'], BOOK)
-            worksheet = book.get_sheet_by_name(
-                _get_name(worksheet, book.sheetnames)
-            )
+            worksheet = book[_find_word_ci(worksheet, book.sheetnames)]
 
         context = sh_utl.combine_dicts(
             context, base={'sheet': worksheet.title.upper()}
@@ -239,7 +237,7 @@ class ExcelModel(object):
             if not are_in(books, filename, BOOK):
                 book = get_in(books, filename, BOOK, default=openpyxl.Workbook)
                 for ws in book.worksheets:
-                    book.remove(ws)
+                    del book[ws]
             else:
                 book = books[filename][BOOK]
 
